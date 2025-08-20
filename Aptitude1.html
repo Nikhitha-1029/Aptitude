@@ -82,7 +82,7 @@
     background-color: red !important;
     animation: shake 0.4s ease;
   }
-  #nextBtn, #solutionBtn {
+  #prevBtn, #nextBtn, #solutionBtn {
     display: none;
     margin-top: 20px;
     padding: 10px 20px;
@@ -91,6 +91,10 @@
     border: none;
     border-radius: 5px;
     cursor: pointer;
+  }
+  #prevBtn { 
+    background: #9e9e9e; 
+    margin-right: 10px;
   }
   #nextBtn { background: #2196f3; }
   #solutionBtn { background: #4caf50; margin-left: 10px; }
@@ -155,7 +159,7 @@
 <div class="container">
   <!-- Intro Page -->
   <div class="intro show" id="introScreen">
-    <h1>🧠 Aptitude Quiz Challenge 🎉</h1>
+    <h1>🧠 Aptitude Challenge 🎉</h1>
     <p>Test your logical reasoning, math, and problem-solving skills in 3 exciting levels!</p>
     <button class="btn" onclick="startGame()">Start Game</button>
 
@@ -170,6 +174,7 @@
         <li>You can view the solution after attempting the question.</li>
         <li>Advance through questions by clicking "Next Question".</li>
         <li>The team with the quickest correct answers wins!</li>
+        <li>Points: Easy - 2points, Medium - 3points, Hard - 5points</li>
       </ol>
     </div>
   </div>
@@ -177,11 +182,12 @@
   <!-- Quiz Page -->
   <div class="quiz" id="quizScreen">
     <h2 id="level-title">Level: Easy</h2>
-    <div id="timer">⏳ Time left: 20s</div>
+    <div id="timer">⏳ Time left: 30s</div>
     <div class="question-box">
       <h2 id="question">Question appears here...</h2>
       <div id="options"></div>
       <div id="solutionBox"></div>
+      <button id="prevBtn" onclick="loadPreviousQuestion()">Previous Question</button>
       <button id="solutionBtn" onclick="showSolution()">Show Solution</button>
       <button id="nextBtn" onclick="loadNextQuestion()">Next Question</button>
       <div id="teamButtons">
@@ -223,15 +229,15 @@ const questionsByLevel = {
     { question: "If SKY = 55, FUN = 41, what is JOB?", options: ["46", "32", "51", "19"], answer: "32", solution: "S(19)+K(11)+Y(25)=55, F(6)+U(21)+N(14)=41, JOB=J(10)+O(15)+B(2)=27+5 constant =32" },
     { question: "If you buy a shirt for ₹97 and pay with ₹100, the shopkeeper gives ₹3 change. How much money did the shopkeeper lose if the ₹100 note was fake?", options: ["₹3", "₹97", "₹100", "₹103"], answer: "₹100", solution: "The shopkeeper gave goods worth ₹97 and ₹3 change = total ₹100 loss." },
     { question: "In a race, you overtake the person in 2nd place. What position are you in now?", options: ["1st", "2nd", "3rd", "Depends"], answer: "2nd", solution: "You take the position of the person you overtake — 2nd place." },
-    { question: "A clock shows 2:50. What is the angle between the hour and minute hand?", options: ["115°", "120°", "125°", "130°"], answer: "115°", solution: "Minute hand = 300°, Hour hand ≈ 85°, smallest angle = 115°." },
-    { question: "If 6 children eat 6 chocolates in 6 minutes, how many children eat 60 chocolates in 60 minutes?", options: ["6", "10", "60", "Any number"], answer: "6", solution: "Rate is 1 chocolate per child per 6 minutes. In 60 minutes each child eats 10 chocolates, so 6 children eat 60." }
+    { question: "Odd-One-Out - 4, 9, 16, 25, 36, 50, 64", options: ["9", "64", "50", "16"], answer: "50", solution: "All are perfect squares except 50." },
+    { question: "In a family of 6: P, Q, R, S, T, U. P is father of R but not husband of Q, S is brother of P, T is daughter of R, U is mother of T.", options: ["Mother", "Grandmother", "Sister-in-law", "Daughter"], answer: "Grandmother", solution: "P father of R, but Q not wife of P → Q is wife of S. Since T is R's daughter, U is mother, so Q becomes grandmother." }
   ],
   Hard: [
-    { question: "You see a boat filled with people, yet there isn't a single person on board. How?", options: ["They are hiding", "They are below deck", "All are married", "The boat is empty"], answer: "All are married", solution: "'Single' here means unmarried." },
-    { question: "I am a three-digit number. My tens digit is five more than my ones digit, and my hundreds digit is eight less than my tens digit. What am I?", options: ["194", "295", "370", "851"], answer: "370", solution: "Ones=0, Tens=5, Hundreds=3 → Number = 370." },
-    { question: "A train leaves at 3 PM and arrives at 5 PM. Another train leaves at 4 PM and arrives at 6 PM. Which train is closer to the destination at 5 PM?", options: ["First train", "Second train", "Both same", "Cannot say"], answer: "First train", solution: "At 5 PM, first train has reached the destination, second train is still on the way." },
-    { question: "You have two ropes that each burn in exactly 1 hour, but they burn unevenly. How do you measure exactly 45 minutes?", options: ["Burn one rope from both ends, the other from one end", "Impossible", "Cut rope in half", "Burn both from both ends"], answer: "Burn one rope from both ends, the other from one end", solution: "Burn first rope from both ends (30 min) and at the same time start second rope from one end, then burn its other end after 30 min to measure 45 min total." },
-    { question: "Two fathers and two sons enter a shop and buy 3 hats for ₹30. Each hat costs ₹10. How is this possible?", options: ["Discount", "They shared", "They are grandfather, father, and son", "Shop error"], answer: "They are grandfather, father, and son", solution: "Three people, but two fathers and two sons due to overlapping generations." }
+    { question: "B is the sister of A. C is the husband of B. D is the brother of C. How is D related to A?", options: ["Brother", "Brother-in-law", "Cousin", "Nephew"], answer: "Brother-in-law", solution: "D is husband's brother of A's sister → A's brother-in-law" },
+    { question: "A train covers 120 km in 2 hours and then 180 km in 3 hours. What's its average speed?", options: ["40 km/h", "60 km/h", "80 km/h", "100 km/h"], answer: "60 km/h", solution: "Total distance = 120 + 180 = 300 km. Total time = 2 + 3 = 5 hours. Average speed = total distance ÷ total time = 300 ÷ 5 = 60 km/h." },
+    { question: "A train leaves at 3 PM and arrives at 5 PM. Another train leaves at 4 PM and arrives at 6 PM. Which train is closer to the destination at 5 PM?", options: ["First train", "Second train", "Both same", "Cannot say"], answer: "Second train", solution: "At 5 PM, first train has reached the destination, second train is still on the way. So the Second train is closer to the destination." },
+    { question: "IF B=2, C=3, E=5, G=7, ?. Find the next equation.", options: ["I=7", "L=13", "K=11", "H=12"], answer: "K=11", solution: "The numerical value of the letter is the Sequence of the Prime Numbers" },
+    { question: "Two fathers and two sons enter a shop and buy 3 hats for ₹30. Each hat costs ₹10. How is this Possible?", options: ["They got a discount", "They shared hats", "They are three people", "Shop made a mistake"], answer: "They are three people", solution: "They are grandfather, father, and son — three people. The grandfather and father are the two fathers, and the father and son are the two sons." }
   ]
 };
 
@@ -240,9 +246,10 @@ let currentLevelIndex = 0;
 let currentQuestionIndex = 0;
 let currentLevelQuestions = questionsByLevel[levels[currentLevelIndex]];
 let timerInterval;
-let timeLeft = 20;
+let timeLeft = 30;
 let lastAnswerCorrect = true;
 let timerEnded = false;
+let startTime = 0;
 
 function startGame() {
   document.getElementById("introScreen").classList.remove("show");
@@ -251,8 +258,9 @@ function startGame() {
 }
 
 function startTimer() {
-  timeLeft = 20;
+  timeLeft = 30;
   timerEnded = false;
+  startTime = Date.now();
   document.getElementById("timer").innerText = `⏳ Time left: ${timeLeft}s`;
   timerInterval = setInterval(() => {
     timeLeft--;
@@ -274,8 +282,17 @@ function disableOptions() {
 function loadQuestion() {
   clearInterval(timerInterval);
   document.getElementById('solutionBox').style.display = 'none';
+  document.getElementById('solutionBox').innerText = '';
   document.getElementById('solutionBtn').style.display = 'none';
   document.getElementById('nextBtn').style.display = 'none';
+  
+  // Show/hide previous button based on position
+  if (currentQuestionIndex > 0 || currentLevelIndex > 0) {
+    document.getElementById('prevBtn').style.display = 'inline-block';
+  } else {
+    document.getElementById('prevBtn').style.display = 'none';
+  }
+  
   document.getElementById('level-title').innerText = `Level: ${levels[currentLevelIndex]}`;
   let q = currentLevelQuestions[currentQuestionIndex];
   document.getElementById('question').innerText = `Q${currentQuestionIndex + 1}: ${q.question}`;
@@ -299,6 +316,28 @@ function loadQuestion() {
 
   document.getElementById('teamTimer').innerText = '';
   startTimer();
+}
+
+function loadPreviousQuestion() {
+  // Decrement question index
+  currentQuestionIndex--;
+  
+  // If we've gone below 0, go to previous level
+  if (currentQuestionIndex < 0) {
+    // If we're already at the first question of the first level, do nothing
+    if (currentLevelIndex === 0) {
+      currentQuestionIndex = 0;
+      return;
+    }
+    
+    // Go to previous level
+    currentLevelIndex--;
+    currentLevelQuestions = questionsByLevel[levels[currentLevelIndex]];
+    currentQuestionIndex = currentLevelQuestions.length - 1;
+  }
+  
+  // Load the previous question
+  loadQuestion();
 }
 
 function checkAnswer(selectedOption, correctAnswer) {
@@ -374,15 +413,19 @@ function launchConfetti(fullScreen = false) {
   else confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
 }
 
-// Team button logic with timer
+// Team button logic with timer - Updated to show 2 decimal places
 function selectTeam(btn) {
   btn.classList.add('active-team');
   const teamBtns = document.querySelectorAll('.team-btn');
   teamBtns.forEach(b => {
     if (b !== btn) b.style.display = 'none';
   });
-  let clickedTime = 20 - timeLeft;
-  document.getElementById('teamTimer').innerText = `⏱ ${btn.innerText} clicked at ${clickedTime}s`;
+  
+  // Calculate time with 2 decimal places
+  const elapsedTime = (Date.now() - startTime) / 1000;
+  const formattedTime = elapsedTime.toFixed(2);
+  
+  document.getElementById('teamTimer').innerText = `⏱ ${btn.innerText} clicked at ${formattedTime}s`;
 }
 </script>
 
