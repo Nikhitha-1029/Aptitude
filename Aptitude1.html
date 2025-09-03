@@ -193,7 +193,7 @@
       <div id="teamButtons">
         <button class="team-btn" onclick="selectTeam(this)">Team A</button>
         <button class="team-btn" onclick="selectTeam(this)">Team B</button>
-        <button class="team-btn" onclick="selectTeam(this)">Team C</button>
+        <button class="team-btn" onclick="selectTask(this)">Team C</button>
       </div>
       <div id="teamTimer"></div>
     </div>
@@ -238,10 +238,17 @@ const questionsByLevel = {
     { question: "A train leaves at 3 PM and arrives at 5 PM. Another train leaves at 4 PM and arrives at 6 PM. Which train is closer to the destination at 5 PM?", options: ["First train", "Second train", "Both same", "Cannot say"], answer: "Second train", solution: "At 5 PM, first train has reached the destination, second train is still on the way. So the Second train is closer to the destination." },
     { question: "IF B=2, C=3, E=5, G=7, ?. Find the next equation.", options: ["I=7", "L=13", "K=11", "H=12"], answer: "K=11", solution: "The numerical value of the letter is the Sequence of the Prime Numbers" },
     { question: "Two fathers and two sons enter a shop and buy 3 hats for ₹30. Each hat costs ₹10. How is this Possible?", options: ["They got a discount", "They shared hats", "They are three people", "Shop made a mistake"], answer: "They are three people", solution: "They are grandfather, father, and son — three people. The grandfather and father are the two fathers, and the father and son are the two sons." }
-  ]
+  ],
+  Fun: [
+    { question: "Why was the Maths book looks so sad?", options: ["Think about it and click Show Solution"], answer: "Because it had too many problems", solution: "Math books are filled with math problems, which can make them seem 'sad'." },
+    { question: "What has a head, a tail, but no body?", options: ["Think about it and click Show Solution"], answer: "A coin", solution: "A coin has a head (front side) and a tail (back side) but no physical body." },
+    { question: "Which month has 28 days?", options: ["Think about it and click Show Solution"], answer: "Every Month has 28 days", solution: "All months have at least 28 days, though February is the only one that stops there in non-leap years." },
+    { question: "You see a boat filled with people, but there isn't a single person on board. How is that possible?", options: ["Think about it and click Show Solution"], answer: "Because all are Married", solution: "The word 'single' can mean unmarried, so if everyone is married, there isn't a 'single' (unmarried) person on board." },
+    { question: "What can be cracked, made, told, and played?", options: ["Think about it and click Show Solution"], answer: "A Joke", solution: "You crack a joke, make a joke, tell a joke, and play a joke on someone." }
+  ],
 };
 
-let levels = ["Easy", "Medium", "Hard"];
+let levels = ["Easy", "Medium", "Hard", "Fun"];
 let currentLevelIndex = 0;
 let currentQuestionIndex = 0;
 let currentLevelQuestions = questionsByLevel[levels[currentLevelIndex]];
@@ -298,13 +305,35 @@ function loadQuestion() {
   document.getElementById('question').innerText = `Q${currentQuestionIndex + 1}: ${q.question}`;
   let optionsDiv = document.getElementById('options');
   optionsDiv.innerHTML = '';
-  q.options.forEach(option => {
-    let btn = document.createElement('div');
-    btn.classList.add('option');
-    btn.innerText = option;
-    btn.onclick = () => checkAnswer(btn, q.answer);
-    optionsDiv.appendChild(btn);
-  });
+  
+  // For Fun level, show a prompt to use the solution button
+  if (levels[currentLevelIndex] === "Fun") {
+    q.options.forEach(option => {
+      let btn = document.createElement('div');
+      btn.classList.add('option');
+      btn.innerText = option;
+      btn.onclick = () => {
+        // For Fun level, just show the solution button when any option is clicked
+        document.getElementById('solutionBtn').style.display = 'inline-block';
+        document.getElementById('nextBtn').style.display = 'inline-block';
+        disableOptions();
+      };
+      optionsDiv.appendChild(btn);
+    });
+    
+    // For Fun level, show the solution button immediately
+    document.getElementById('solutionBtn').style.display = 'inline-block';
+    document.getElementById('nextBtn').style.display = 'inline-block';
+  } else {
+    // For other levels, use the normal behavior
+    q.options.forEach(option => {
+      let btn = document.createElement('div');
+      btn.classList.add('option');
+      btn.innerText = option;
+      btn.onclick = () => checkAnswer(btn, q.answer);
+      optionsDiv.appendChild(btn);
+    });
+  }
 
   // Reset team buttons
   const teamBtns = document.querySelectorAll('.team-btn');
